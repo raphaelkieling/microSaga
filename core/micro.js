@@ -1,5 +1,5 @@
 function _isPromise(value) {
-  return "then" in value;
+  return 'then' in value;
 }
 
 export function microSaga(generator, init = null) {
@@ -15,19 +15,21 @@ export function microSaga(generator, init = null) {
   }
 
   switch (value.type) {
-    case "SATISFY":
-      return value.payload.then((result) => microSaga(generator, result));
+    case 'SATISFY':
+      return value.payload.then((result) =>
+        microSaga(generator, result)
+      );
 
-    case "FORK":
+    case 'FORK':
       return microSaga(value.payload).then((dataFromFork) => {
         return microSaga(generator, dataFromFork);
       });
 
-    case "SPAWN":
+    case 'SPAWN':
       microSaga(value.payload);
       return microSaga(generator);
 
-    case "ALL":
+    case 'ALL':
       return Promise.all(value.payload).then((result) => {
         return microSaga(generator, result);
       });
@@ -48,28 +50,28 @@ export function delay(time, rt) {
 
 export function satisfy(promise) {
   return {
-    type: "SATISFY",
-    payload: promise,
+    type: 'SATISFY',
+    payload: promise
   };
 }
 
 export function all(functions) {
   return {
-    type: "ALL",
-    payload: functions,
+    type: 'ALL',
+    payload: functions
   };
 }
 
 export function fork(generator) {
   return {
-    type: "FORK",
-    payload: generator,
+    type: 'FORK',
+    payload: generator
   };
 }
 
 export function spawn(generator) {
   return {
-    type: "SPAWN",
-    payload: generator,
+    type: 'SPAWN',
+    payload: generator
   };
 }
